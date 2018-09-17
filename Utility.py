@@ -273,7 +273,7 @@ def drawCurves(bg, curves, fname=FG+'curves.png', _width=5):
         y = c[1]
 
         for i in range(len(x)-1):
-            draw.line( (x[i], y[i], x[i+1], y[i+1]) , fill=128, width=_width )
+            draw.line( (y[i], x[i], y[i+1], x[i+1]) , fill=128, width=_width )
 
     im.save(fname)
     return im
