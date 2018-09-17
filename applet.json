@@ -1,0 +1,23 @@
+{
+    "dataset":{
+    	"link" : "./Dataset/Australia/Rotations/Australia_strip.mat"
+    },
+    "model1":{
+    	"link" : "./CallBacks/Rotate/FaultDetection.hdf5",
+		"w": "45"
+     },
+    "model2": {
+    	"link" : "./CallBacks/Rotate/Rotate_choosy.hdf5",
+		"w": "45"
+    },
+    "pmap": {
+        "link" : "./PMAP.npz",
+        "plink": "./Results/NewTrainingRandom_strip_mixed/Pmamp_Fault_Australia.hdf5Australia_strip.mat.npz",
+        "alink": "./Results/TrainOnRandomSelection_w35_angel/PMAP_angel.npz",
+        "trained" : "1",
+        "lnumber" : "0"
+    },
+    "filter":{
+        "link" : "./Filters/Filters_w45_36.mat"
+    }
+}
