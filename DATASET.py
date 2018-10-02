@@ -5,6 +5,7 @@ import sys
 import numpy as np
 import random
 import scipy.io as sio
+import scipy.ndimage
 
 from globalVariables import *
 from Utility import *
@@ -179,6 +180,7 @@ class DATASET:
         X = np.zeros([len(IDX[0]), w, w, Layers])
         Y = np.zeros([len(IDX[0]), 1])
 
+        inverted_mask = ~circular_mask(w)
         for k in range(len(IDX[0])):
 
             if DEBUG_MODE and np.random.rand() < 0.01:
@@ -188,8 +190,10 @@ class DATASET:
             [i,j] = [IDX[0][k],IDX[1][k]]
             xr = np.array(input[i-s:i+s+1, j-s:j+s+1, :])
 
-            [fnum, filter] = F.getFilter()
-            X[k,:,:,:] =  rotateWithMap(xr, filter[0], map_type='m2r', dim=2)
+            X[k,:,:,:] = scipy.ndimage.rotate(xr, random.randrange(0, 360, 6), reshape=False, order=0)
+            X[k,:,:,:][inverted_mask] = 0
+            #[fnum, filter] = F.getFilter()
+            #X[k,:,:,:] =  rotateWithMap(xr, filter[0], map_type='m2r', dim=2)
 
             if choosy == False: # All areas, not only faults
                 Y[k] = O[i, j]
@@ -267,5 +271,8 @@ class DATASET:
 
         return [pos_score, neg_score]
 
-
-
+def circle_mask(width = 5):
+    radius = (width - 1) / 2
+    Y, X = np.ogrid[:width, :width]
+    distance = np.sqrt((Y - radius) ** 2 + (X - radius) ** 2)
+    return distance
