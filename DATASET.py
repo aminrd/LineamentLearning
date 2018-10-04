@@ -259,14 +259,14 @@ class DATASET:
 
 
         IDX_pos = labels > 0
-        differror = np.abs(labels - pmap)
+        differror = np.square(labels - pmap)
         differror[~IDX_pos] = 0
         pos_score = differror.sum() / IDX_pos.sum()
 
 
 
         IDX_neg = labels <= 0
-        differror = np.abs(labels - pmap)
+        differror = np.square(labels - pmap)
         differror[~IDX_neg] = 0
         neg_score = differror.sum() / max(1, (pmap[IDX_neg] >0 ).sum())
 
