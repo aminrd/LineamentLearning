@@ -1,8 +1,12 @@
 #Pmap Viewer
 import numpy as np
+__author__ = "Amin Aghaee"
+__copyright__ = "Copyright 2018, Amin Aghaee"
+
 from PIL import Image, ImageDraw, ImageTk
 import tkinter as tk
 import json
+
 
 # Loading Related Modules:
 # --------------------------------------

@@ -3,6 +3,9 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+__author__ = "Amin Aghaee"
+__copyright__ = "Copyright 2018, Amin Aghaee"
+
 from sklearn import linear_model
 from sklearn.cluster import DBSCAN
 from sklearn.metrics import mean_squared_error

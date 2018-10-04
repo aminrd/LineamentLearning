@@ -1,5 +1,7 @@
 
 # Utility file: Contains functions to show matrices, normalizations, ....
+__author__ = "Amin Aghaee"
+__copyright__ = "Copyright 2018, Amin Aghaee"
 import numpy as np
 from PIL import Image, ImageDraw
 from globalVariables import *

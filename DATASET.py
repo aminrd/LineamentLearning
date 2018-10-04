@@ -1,5 +1,7 @@
 # Module : Dataset
 # Loading dataset from MATLAB files , Expanding fault lines
+__author__ = "Amin Aghaee"
+__copyright__ = "Copyright 2018, Amin Aghaee"
 
 import sys
 import numpy as np

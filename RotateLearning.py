@@ -1,4 +1,7 @@
 
+__author__ = "Amin Aghaee"
+__copyright__ = "Copyright 2018, Amin Aghaee"
+
 import os
 import sys
 import numpy as np
@@ -13,6 +16,7 @@ from DATASET import *
 from MODEL import *
 from FILTER import *
 from PmapViewer import *
+from Logger import *
 # --------------------------------------
 
 

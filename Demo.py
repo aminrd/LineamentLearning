@@ -1,3 +1,7 @@
+
+__author__ = "Amin Aghaee"
+__copyright__ = "Copyright 2018, Amin Aghaee"
+
 from DATASET import *
 from PmapViewer import *
 

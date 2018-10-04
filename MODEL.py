@@ -1,5 +1,8 @@
 
 # Class : Model
+__author__ = "Amin Aghaee"
+__copyright__ = "Copyright 2018, Amin Aghaee"
+
 import numpy as np
 import random
 
