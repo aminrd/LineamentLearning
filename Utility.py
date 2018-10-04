@@ -305,3 +305,13 @@ def getRandomColour(channel=3):
 
 
 
+def circular_mask(width = 5 , R = None):
+    radius = (width - 1) / 2
+
+    if R is None:
+        R = radius
+
+    Y, X = np.ogrid[:width, :width]
+    distance = np.sqrt((Y - radius) ** 2 + (X - radius) ** 2)
+
+    return distance <= R

@@ -17,7 +17,7 @@ import numpy.matlib
 
 METHOD_OPTIONS = ['Linear', 'Curve', 'BestCurve']
 METHOD = METHOD_OPTIONS[2]
-DEGREELIST = [1,3,5]
+DEGREELIST = [1,3]
 DEGREE = 3
 
 

@@ -9,7 +9,7 @@ import scipy.ndimage
 
 from globalVariables import *
 from Utility import *
-from FILTER import *
+#from FILTER import *
 
 
 if DEBUG_MODE:
@@ -153,11 +153,10 @@ class DATASET:
 
 
 
-    def generateDSwithFilter(self, filter_dir, output, mask, w = WindowSize, choosy = False, ratio = 1.0):
+    def generateDSwithFilter(self, dstype, output, mask, w = WindowSize, choosy = False, ratio = 1.0):
         # When choosy = TRUE : it only picks the fault locations and labels are based on fault angels
         # ratio coresponds to randomly selecting all possible locations
 
-        F = FILTER(filter_dir)
         input = np.array(self.INPUTS)
 
         s = np.uint32((w-1)/2)
@@ -181,6 +180,7 @@ class DATASET:
         Y = np.zeros([len(IDX[0]), 1])
 
         inverted_mask = ~circular_mask(w)
+
         for k in range(len(IDX[0])):
 
             if DEBUG_MODE and np.random.rand() < 0.01:
@@ -190,16 +190,18 @@ class DATASET:
             [i,j] = [IDX[0][k],IDX[1][k]]
             xr = np.array(input[i-s:i+s+1, j-s:j+s+1, :])
 
-            X[k,:,:,:] = scipy.ndimage.rotate(xr, random.randrange(0, 360, 6), reshape=False, order=0)
+            if dstype == 'train':
+                X[k,:,:,:] = scipy.ndimage.rotate(xr, random.randrange(0, 360, 6), reshape=False, order=0)
+            else:
+                X[k, :, :, :] = scipy.ndimage.rotate(xr, 0, reshape=False, order=0)
+
             X[k,:,:,:][inverted_mask] = 0
-            #[fnum, filter] = F.getFilter()
-            #X[k,:,:,:] =  rotateWithMap(xr, filter[0], map_type='m2r', dim=2)
+
 
             if choosy == False: # All areas, not only faults
                 Y[k] = O[i, j]
-            else:
-                radian = np.arctan( np.tan(O[i,j] + F.getRadian(fnum)[0]) )
-                Y[k] = labelAngel(radian)
+            else:#TODO: Non choosy not supported yet
+                Y[k] = O[i, j]
 
         return [X,Y, IDX]
 
@@ -253,26 +255,22 @@ class DATASET:
             pmap[np.where(self.MASK == 0)] = 0
 
 
-        IDX1 = np.where(labels > 0)
-        pos_score = np.dot(labels[IDX1], pmap[IDX1]) / len(IDX1[0])
+
+        IDX_pos = labels > 0
+        differror = np.abs(labels - pmap)
+        differror[~IDX_pos] = 0
+        pos_score = differror.sum() / IDX_pos.sum()
+
+
+
+        IDX_neg = labels <= 0
+        differror = np.abs(labels - pmap)
+        differror[~IDX_neg] = 0
+        neg_score = differror.sum() / max(1, (pmap[IDX_neg] >0 ).sum())
 
         IDXa = np.where(pmap > 0)
 
-        cn = 0
-        sum = 0
-        for k in range(len(IDXa[0])):
-            [i,j] = [IDXa[0][k], IDXa[1][k]]
-            if labels[i,j] <=0:
-                cn = cn+1
-                sum = sum + pmap[i,j]
 
 
-        neg_score = sum / cn
 
         return [pos_score, neg_score]
-
-def circle_mask(width = 5):
-    radius = (width - 1) / 2
-    Y, X = np.ogrid[:width, :width]
-    distance = np.sqrt((Y - radius) ** 2 + (X - radius) ** 2)
-    return distance

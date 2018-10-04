@@ -20,7 +20,7 @@ from PmapViewer import *
 def GET_PARSER():
     parser = argparse.ArgumentParser()
     parser.add_argument('work', default='teset-choosy')
-    parser.add_argument('-w', '--windowsize', type=int, default=WindowSize)
+    parser.add_argument('-W', '--WSIZE', type=int, default=45)
     parser.add_argument('-it', '--iterations', type=int, default=ITERATIONS)
     parser.add_argument('-prefix', '--prepprefix', default='ANG_')
     parser.add_argument('-nprep', '--prefnumber', type=int, default=15)
@@ -36,7 +36,7 @@ def SET_DEFAULT_ARGUMENTS(args):
     global ITERATIONS
     ITERATIONS = args.iterations
     global WindowSize
-    WindowSize = args.windowsize
+    WindowSize = args.WSIZE
     print('#' * 30)
 
 
@@ -45,7 +45,7 @@ if __name__== "__main__":
     parser = GET_PARSER()
     args = parser.parse_args()
     work = args.work
-    SET_DEFAULT_ARGUMENTS(args)
+    #SET_DEFAULT_ARGUMENTS(args)
 
 
 
@@ -378,7 +378,7 @@ if __name__== "__main__":
             Y = np.zeros((1, 1))
             for t2 in range(NREPEAT):
 
-                [Xb, Yb, IDXb] = ds.generateDSwithFilter(flt_name,ds.DEGREES, ds.trainMask, ratio=RATIO, choosy=True)
+                [Xb, Yb, IDXb] = ds.generateDSwithFilter('train',ds.DEGREES, ds.trainMask, ratio=RATIO, choosy=True)
                 X = np.concatenate((X, Xb), axis=0)
                 Y = np.concatenate((Y, Yb), axis=0)
 
@@ -397,37 +397,31 @@ if __name__== "__main__":
 
     elif work.__eq__("prepare-datasets-flt"):
 
+        W = args.WSIZE
+
 
         ds1 = DATASET(DSDIR + 'Australia_strip.mat')
         ds2 = DATASET(DSDIR + 'QUEST_strip.mat')
 
-        RATIO = [0.07, 0.015]
+        RATIO = [0.045, 0.008]
         oname = ['A_','Q_']
 
 
-        ds1.expandBy(width=45, epsilon=0.9)
-        ds2.expandBy(width=45, epsilon=0.9)
+        ds1.expandBy(width=W, epsilon=0.9)
+        ds2.expandBy(width=W, epsilon=0.9)
 
         ds = [ds1, ds2]
 
 
 
         NFILE = [100,100]
-        NREPEAT = 1
-        flt_name = FILTERDIR + 'Filters_w45_100.mat'
 
 
         for t2 in range(len(ds)):
 
             for t1 in range(NFILE[t2]):
 
-                X = np.zeros((1, WindowSize, WindowSize, Layers))
-                Y = np.zeros((1, 1))
-                for r in range(NREPEAT):
-
-                    [Xb, Yb, IDXb] = ds[t2].generateDSwithFilter(flt_name,ds[t2].OUTPUT, ds[t2].trainMask, ratio=RATIO[t2], choosy=False)
-                    X = np.concatenate((X, Xb), axis=0)
-                    Y = np.concatenate((Y, Yb), axis=0)
+                [X, Y, IDXb] = ds[t2].generateDSwithFilter('train',ds[t2].OUTPUT, ds[t2].trainMask, w=W , ratio=RATIO[t2], choosy=False)
 
                 FNAME = DSREADY + oname[t2] + '{}'.format(t1)
                 np.savez(FNAME, X=X, Y=Y)
@@ -444,34 +438,36 @@ if __name__== "__main__":
 
 
 
-    elif work.__eq__("train-prepared"):
+    elif work == "train-prepared":
 
+        W = args.WSIZE
 
         prefix = args.prepprefix
         nfile = args.prefnumber
 
-        if prefix.__eq__("A_"):
-            fname = CB + 'Fault_Australia.hdf5'
-        elif prefix.__eq__("Q_"):
-            fname = CB + 'Fault_Quest.hdf5'
+        if prefix == "A_":
+            fname = CB + '{}_Fault_Australia.hdf5'.format(W)
+        elif prefix == "Q_":
+            fname = CB + '{}_Fault_Quest.hdf5'.format(W)
         else:
-            fname = CB + 'Fault_Mixed.hdf5'
+            fname = CB + '{}_Fault_Mixed.hdf5'.format(W)
 
-        #model = MODEL(w=args.windowsize, checkpoint=fname)
-        model = MODEL(w=45, checkpoint=fname)
+        model = MODEL(w=W, checkpoint=fname)
 
 
-        for i in range(args.prefnumber):
+        for i in range(nfile):
+
             if DEBUG_MODE:
                 print("******* Working of prepared file: {}".format(i+1) + '-'+ slideBar(i*100/args.prefnumber))
 
-            if prefix.__eq__("A_") or prefix.__eq__("Q_"):
+            if prefix == "A_" or prefix == "Q_":
                 ds_fname = DSREADY+ prefix + "{}.npz".format(i)
                 data = np.load(ds_fname)
-                model.train(data['X'], data['Y'], epochs=4)
+                model.train(data['X'], data['Y'], epochs=1)
+
             else:
                 mixed_list = ['A_','Q_']
-                X = np.zeros((1, WindowSize, WindowSize, Layers))
+                X = np.zeros((1, W, W, Layers))
                 Y = np.zeros((1, 1))
 
                 for p in mixed_list:
@@ -480,16 +476,7 @@ if __name__== "__main__":
                     X = np.concatenate((X, data['X']), axis=0)
                     Y = np.concatenate((Y, data['Y']), axis=0)
 
-                model.train(X, Y, epochs=4)
-
-
-
-
-
-
-
-
-
+                model.train(X, Y, epochs=1)
 
 
 
@@ -528,7 +515,7 @@ if __name__== "__main__":
                 print("Loading Model W = {}".format(W))
                 print("Drawing output for rotation number : {}".format(i+1))
 
-            [X, Y, IDX] = ds.generateDSwithFilter(flt_name, ds.OUTPUT, ds.MASK, ratio=0.1, w=W, choosy=False)
+            [X, Y, IDX] = ds.generateDSwithFilter('test', ds.OUTPUT, ds.MASK, ratio=0.1, w=W, choosy=False)
             Yh = model.predict(X)
 
             d = drawLines(O, IDX , Yh, WIDTH = 1 , FILL = 128, ws = 1, fname = FG+'Map_allarea_w{}_{}.png'.format(W,i+1), threshold=0.4)
@@ -577,7 +564,7 @@ if __name__== "__main__":
             ds = DATASET(ds_fname)
 
             PMAPS = np.zeros((ds.OUTPUT.shape[0], ds.OUTPUT.shape[1], FLT.N))
-            [X, Y, IDX] = ds.generateDSwithFilter(FILTERDIR + 'Filters_0_w45.mat', ds.DEGREES, ds.MASK, ratio=0.99, w=W, choosy=True)
+            [X, Y, IDX] = ds.generateDSwithFilter('test', ds.DEGREES, ds.MASK, ratio=0.99, w=W, choosy=True)
 
             for r in range(FLT.N):
 
@@ -617,7 +604,7 @@ if __name__== "__main__":
         model_flt = MODEL(w=Wf, param_dir=CB + 'FaultDetection.hdf5')
         model_ang = MODEL(w=Wa, param_dir=CB + 'Rotate_choosy.hdf5')
 
-        [X, Y, IDX] = ds.generateDSwithFilter(flt_name, ds.OUTPUT, ds.MASK, ratio=0.2, w=Wf, choosy=False)
+        [X, Y, IDX] = ds.generateDSwithFilter('test', ds.OUTPUT, ds.MASK, ratio=0.2, w=Wf, choosy=False)
         Yh1 = model_flt.predict(X)
         pmap = probMap(ds.OUTPUT.shape, IDX, Yh1)
         newMask = pmapCutoff(pmap, threshold)
@@ -627,7 +614,7 @@ if __name__== "__main__":
         FLT = FILTER(flt_name)
 
         PMAPS = np.zeros((ds.OUTPUT.shape[0], ds.OUTPUT.shape[1], FLT.N))
-        [X, Y, IDX] = ds.generateDSwithFilter(FILTERDIR + 'Filters_0_w45.mat', ds.DEGREES, newMask, ratio=0.99, w=Wa,
+        [X, Y, IDX] = ds.generateDSwithFilter('test', ds.DEGREES, newMask, ratio=0.99, w=Wa,
                                               choosy=True)
 
         MaxProb = -np.ones(len(Y))
@@ -669,11 +656,9 @@ if __name__== "__main__":
 
 
     elif work.__eq__("prepare-pmap"):
-        Wf = 45 # Fault deteciton window size
-        Wa = 45 # Angel detection window size
+        Wf = args.WSIZE
         ratio = 0.999
 
-        flt_name = FILTERDIR + 'Filters_0_w45.mat'
         testList = ['Australia_strip.mat', 'QUEST_strip.mat']
 
 
@@ -689,46 +674,17 @@ if __name__== "__main__":
             pmap = np.zeros(ds.OUTPUT.shape)
 
             for i in range(masknumber):
-                [X, Y, IDX] = ds.generateDSwithFilter(flt_name, ds.OUTPUT, masks[i], ratio=ratio, w=Wf, choosy=False)
+                [X, Y, IDX] = ds.generateDSwithFilter('test', ds.OUTPUT, masks[i], ratio=ratio, w=Wf, choosy=False)
                 Yh1 = model_flt.predict(X)
                 pmap_tmp = probMap(ds.OUTPUT.shape, IDX, Yh1)
                 pmap = np.maximum(pmap, pmap_tmp)
 
 
-            pmapname = 'Pmamp_'+ args.callback + T + '.npz'
+            pmapname = PMAP_DIR + '{}_Pmamp_'.format(Wf)+ args.callback + '_on_{}_'.format(T[:5]) + '.npz'
             np.savez(pmapname, matrix=pmap)
 
 
 
-
-
-
-        exit(0)
-        model_ang = MODEL(w=Wa, param_dir=CB + 'Rotate_choosy.hdf5')
-
-        flt_name = FILTERDIR + 'Filters_w45_36.mat'
-        FLT = FILTER(flt_name)
-
-        PMAPS = np.zeros((ds.OUTPUT.shape[0], ds.OUTPUT.shape[1], FLT.N))
-
-        for i in range(10):
-            [X, Y, IDX] = ds.generateDSwithFilter(FILTERDIR + 'Filters_0_w45.mat', ds.DEGREES, masks[i], ratio=ratio,
-                                                  w=Wa,choosy=True)
-
-            for r in range(FLT.N):
-                [fnum, filter] = FLT.getFilterbyNumber(r)
-                Xr = np.array(X)
-                xr = np.zeros((Wa, Wa, Layers))
-
-                for id in range(Xr.shape[0]):
-                    xr = Xr[id, :, :, :]
-                    Xr[id, :, :, :] = rotateWithMap(xr, filter, map_type='m2r', dim=2)
-
-                Yh = model_ang.predict(Xr)
-                pmap_tmp = probMap(ds.OUTPUT.shape, IDX, Yh)
-                PMAPS[:,:,r] = np.maximum(PMAPS[:,:,r], pmap_tmp)
-
-        np.savez('PMAP.npz', matrix=pmap, bg=ds.OUTPUT, amatrix=PMAPS)
 
 
 

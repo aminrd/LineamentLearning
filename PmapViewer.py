@@ -341,7 +341,7 @@ class PmapViewer:
             im.show()
             return
 
-        max_expand = 7
+        max_expand = 45
         xaxis = list(range(1,max_expand,2))
 
         train_err = np.zeros((len(xaxis), 2))

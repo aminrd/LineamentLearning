@@ -30,6 +30,7 @@ FG = './Figures/Rotate/'
 DSDIR = './Dataset/Australia/Rotations/'
 DSREADY = './Dataset/DSREADY/'
 FILTERDIR = './Filters/'
+PMAP_DIR = './Pmaps/'
 
 # --------------------------------------------------
 
