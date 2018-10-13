@@ -28,7 +28,7 @@ def GET_PARSER():
     parser.add_argument('-it', '--iterations', type=int, default=ITERATIONS)
     parser.add_argument('-prefix', '--prepprefix', default='ANG_')
     parser.add_argument('-nprep', '--prefnumber', type=int, default=15)
-    parser.add_argument('-CB', '--callback ', default='FaultDetection.hdf5')
+    parser.add_argument('-CB', '--callback', default='FaultDetection.hdf5')
     return parser
 
 
@@ -407,7 +407,7 @@ if __name__== "__main__":
         ds1 = DATASET(DSDIR + 'Australia_strip.mat')
         ds2 = DATASET(DSDIR + 'QUEST_strip.mat')
 
-        RATIO = [0.045, 0.008]
+        RATIO = [0.04, 0.005]
         oname = ['A_','Q_']
 
 
@@ -419,7 +419,6 @@ if __name__== "__main__":
 
 
         NFILE = [100,100]
-
 
         for t2 in range(len(ds)):
 
@@ -684,12 +683,24 @@ if __name__== "__main__":
                 pmap = np.maximum(pmap, pmap_tmp)
 
 
+            # Logging activity:
+            L = Logger()
+            L.addlog("-"*30)
+            L.addlog(" W = {} ".format(Wf))
+            L.addlog(" Callback = {}".format(args.callback))
+            L.addlog(" Map = {}".format(T))
+
+            ev_train = ds.evaluate(pmap, Wf, 'train')
+            ev_test = ds.evaluate(pmap, Wf, 'test')
+            ev_all = ds.evaluate(pmap, Wf, 'all')
+
+            L.addlog(" Train Error = {} , {}".format(ev_train[0], ev_train[1]))
+            L.addlog(" Test Error = {} , {}".format(ev_test[0], ev_test[1]))
+            L.addlog(" All Error = {} , {}".format(ev_all[0], ev_all[1]))
+
+
             pmapname = PMAP_DIR + '{}_Pmamp_'.format(Wf)+ args.callback + '_on_{}_'.format(T[:5]) + '.npz'
             np.savez(pmapname, matrix=pmap)
-
-
-
-
 
 
 
