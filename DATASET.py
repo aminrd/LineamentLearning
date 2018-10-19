@@ -244,7 +244,7 @@ class DATASET:
 
     def evaluate(self, _pmap, expand=0, mask = 'all'):
         pmap = np.array(_pmap)
-        labels = self.expandBy(expand, type='normal', set=False)
+        labels = self.expandBy(width=expand, epsilon=0.9 ,type='normal', set=False)
 
         if mask.__eq__('train'):
             labels[np.where(self.trainMask == 0)] = 0
