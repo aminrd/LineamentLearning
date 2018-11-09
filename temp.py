@@ -11,9 +11,17 @@ __copyright__ = "Copyright 2018, Amin Aghaee"
 
 
 
+
+
 from DATASET import *
 import scipy.io as sio
 # --------------------------------------
+
+
+
+
+
+
 
 testList = ['Australia_strip.mat', 'QUEST_strip.mat']
 for T in testList:
@@ -45,18 +53,32 @@ for T in testList:
         for w in range(9, 57, 4):
             print("Teste: {} ----- W = {}".format(T, w))
 
-            [pos, neg] = ds.evaluate(pmap, w, 'train')
+            [pos, neg] = ds.evaluate(pmap, w, 'train', etype='our')
             m['Train_p'] += [pos]
             m['Train_n'] += [neg]
 
-            [pos, neg] = ds.evaluate(pmap, w, 'test')
+            [pos, neg] = ds.evaluate(pmap, w, 'test', etype='our')
             m['Test_p'] += [pos]
             m['Test_n'] += [neg]
 
 
-            [pos, neg] = ds.evaluate(pmap, w, 'all')
+            [pos, neg] = ds.evaluate(pmap, w, 'all', etype='our')
             m['All_p'] += [pos]
             m['All_n'] += [neg]
 
 
     sio.savemat(T[0:5]+'_extreme.mat' , [z,r,o] )
+
+
+
+pmapname = '45_Pmamp_45_Fault_Quest.hdf5_on_QUEST_.npz'
+outputname = 'Quest_on_Quest'
+
+pmap = np.load(pmapname)['matrix']
+
+png = np.uint8(pmap * 255)
+im = Image.fromarray(png)
+im.save(outputname + '.png')
+
+im = Image.fromarray(pmap)
+im.save(outputname + '.tiff')

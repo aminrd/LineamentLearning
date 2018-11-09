@@ -242,37 +242,61 @@ class DATASET:
 
         return m
 
-    def evaluate(self, _pmap, expand=0, mask = 'all'):
+
+
+
+    def evaluate(self, _pmap, expand=0, mask = 'all', etype = 'our'):
         pmap = np.array(_pmap)
         labels = self.expandBy(width=expand, epsilon=0.9 ,type='normal', set=False)
 
+
         if mask.__eq__('train'):
+            maskFilter = self.trainMask
             labels[np.where(self.trainMask == 0)] = 0
             pmap[np.where(self.trainMask == 0)] = 0
         elif mask.__eq__('test'):
+            maskFilter = self.testMask
             labels[np.where(self.testMask == 0)] = 0
             pmap[np.where(self.testMask == 0)] = 0
         else:
+            maskFilter = self.MASK
             labels[np.where(self.MASK == 0)] = 0
             pmap[np.where(self.MASK == 0)] = 0
 
 
 
-        IDX_pos = labels > 0
-        differror = np.square(labels - pmap)
-        differror[~IDX_pos] = 0
-        pos_score = differror.sum() / IDX_pos.sum()
+        if etype == 'our':
+            IDX_pos = labels > 0
+            differror = np.square(labels - pmap)
+            differror[~IDX_pos] = 0
+            pos_score = differror.sum() / IDX_pos.sum()
 
 
 
-        IDX_neg = labels <= 0
-        differror = np.square(labels - pmap)
-        differror[~IDX_neg] = 0
-        neg_score = differror.sum() / max(1, (pmap[IDX_neg] >0 ).sum())
+            IDX_neg = labels <= 0
+            differror = np.square(labels - pmap)
+            differror[~IDX_neg] = 0
+            neg_score = differror.sum() / max(1, (pmap[IDX_neg] >0 ).sum())
 
-        IDXa = np.where(pmap > 0)
-
-
+            IDXa = np.where(pmap > 0)
 
 
-        return [pos_score, neg_score]
+            return [pos_score, neg_score]
+
+
+        else:
+            EPS = np.finfo(float).eps
+
+            yh = np.copy(pmap)
+            yh[ yh == 1.0 ] = 1 - EPS
+            yh[ yh == 0.0 ] = EPS
+
+            y = np.copy(labels)
+            y[ y == 1.0 ] = 1 - EPS
+            y[ y == 0.0 ] = EPS
+
+
+            loss = np.multiply(yh, np.log(yh)) + np.multiply((1.0 - y), np.log( 1-yh ))
+
+            err = -np.sum( loss[maskFilter == 1] ) / np.sum(maskFilter)
+            return [err,err]

@@ -13,7 +13,7 @@ import argparse
 from globalVariables import *
 from Utility import *
 from DATASET import *
-from MODEL import *
+#from MODEL import *
 from FILTER import *
 #from PmapViewer import *
 from Logger import *
@@ -718,32 +718,33 @@ if __name__== "__main__":
                 print("- Evaluating {} ------- W = {}".format(T, Wf))
 
 
-            if args.callback == 'zeros':
-                pmap = np.zeros_like(ds.OUTPUT)
-            elif args.callback == 'ones':
-                pmap = np.ones_like(ds.OUTPUT)
-            else:
-                pmap = ds.expandBy(Wf, epsilon=0.9, set=False)
+            # if args.callback == 'zeros':
+            #     pmap = np.zeros_like(ds.OUTPUT)
+            # elif args.callback == 'ones':
+            #     pmap = np.ones_like(ds.OUTPUT)
+            # else:
+            #     pmap = ds.expandBy(Wf, epsilon=0.9, set=False)
 
-            #pmapname = PMAP_DIR + '{}_Pmamp_'.format(Wf) + "{}_".format(Wf) + args.callback + '_on_{}_'.format(T[:5]) + '.npz'
-            #pmap = np.load(pmapname)['matrix']
+            pmapname = PMAP_DIR + '{}_Pmamp_'.format(Wf) + "{}_".format(Wf) + args.callback + '_on_{}_'.format(T[:5]) + '.npz'
+            pmap = np.load(pmapname)['matrix']
 
-            [pos, neg] = ds.evaluate(pmap, Wf, 'train')
+
+            eval_type = 'loss'
+
+            [pos, neg] = ds.evaluate(pmap, Wf, 'train', eval_type)
             Train_E[0] += [pos]
             Train_E[1] += [neg]
 
-            [pos, neg] = ds.evaluate(pmap, Wf, 'test')
+            [pos, neg] = ds.evaluate(pmap, Wf, 'test', eval_type)
             Test_E[0] += [pos]
             Test_E[1] += [neg]
 
-            [pos, neg] = ds.evaluate(pmap, Wf, 'all')
+            [pos, neg] = ds.evaluate(pmap, Wf, 'all', eval_type)
             All_E[0] += [pos]
             All_E[1] += [neg]
 
         errors = {'TrainE':Train_E , 'TestE':Test_E, 'AllE':All_E}
-        sio.savemat(args.callback + "_" + T + "_eval.mat", errors)
-
-
+        sio.savemat('loss_'+ args.callback + "_" + T + "_eval.mat", errors)
 
 
 

@@ -302,8 +302,28 @@ def colour2vec(colour = 'red'):
 
 
 
-def getRandomColour(channel=3):
-    return np.random.choice(range(10,255),channel)
+def getRandomColour(channel=3, tint = 'default'):
+
+    if tint == 'red':
+        r = np.random.choice(range(200, 255))
+        g = np.random.choice(range(10, 100))
+        b = np.random.choice(range(10, 100))
+        return [r,g,b]
+
+    elif tint == 'green':
+        g = np.random.choice(range(200, 255))
+        r = np.random.choice(range(10, 100))
+        b = np.random.choice(range(10, 100))
+        return [r,g,b]
+
+    elif tint == 'blue':
+        b = np.random.choice(range(200, 255))
+        r = np.random.choice(range(10, 100))
+        g = np.random.choice(range(10, 100))
+        return [r,g,b]
+
+    else:
+        return np.random.choice(range(10, 255), channel)
 
 
 
