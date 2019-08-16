@@ -4,6 +4,7 @@ Minerals exploration is becoming more difficult, particularly because most miner
 
 This repository contains all codes used in my [Master Thesis](http://hdl.handle.net/2429/68438). This program developed under Python3 and using Numpy, Keras, Tensorflow, Pillow, TKinter, Matplot, Scipy libraries. 
 
+![AppletDemo](./AppletDemo.png/)
 
 
 ## Author
