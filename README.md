@@ -6,6 +6,7 @@ This repository contains all codes used in my [Master Thesis](http://hdl.handle.
 
 ## Input Layers
 We use 8 aerial images to train this model: 
+
 ![InputLayers](./InputLayers.png)
 
 ## Model
