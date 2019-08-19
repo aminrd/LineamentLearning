@@ -4,7 +4,17 @@ Minerals exploration is becoming more difficult, particularly because most miner
 
 This repository contains all codes used in my [Master Thesis](http://hdl.handle.net/2429/68438). This program developed under Python3 and using Numpy, Keras, Tensorflow, Pillow, TKinter, Matplot, Scipy libraries. 
 
-![AppletDemo](./AppletDemo.png/)
+## Input Layers
+We use 8 aerial images to train this model: 
+![InputLayers](./InputLayers.png)
+
+## Model
+We designed and trained the following model using Keras and Tensorflow libraries. It starts from the input layer on the left which is consist of patches of size W × W × 8. Then we have a convolution 21 layer that creates a 3 × 3 convolution kernel that is convolved with the layer input to produce the output. A rectified linear unit (ReLU) is applied to the outputs of the convolutions. In order to reduce the dimensionality and to allow generalization in patches, we use 6 × 6 max pooling operations, which combine the outputs of neuron clusters at one layer into a single neuron in the next layer. We use a flatten layer that reshapes and merges previous hidden layers in the network into a single one-dimensional array. Finally, we use a fully connected neural network with two hidden layers with ReLU activations and one output layer of size one with Sigmoid activation.
+
+![NNModel](./Model.png)
+
+
+![AppletDemo](./AppletDemo.png)
 
 
 ## Author
