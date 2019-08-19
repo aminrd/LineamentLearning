@@ -14,7 +14,8 @@ We designed and trained the following model using Keras and Tensorflow libraries
 
 ![NNModel](./Model.png)
 
-
+## GUI Applet
+We developed our own small GUI Applet to open datasets, train our model with different variables. 
 ![AppletDemo](./AppletDemo.png)
 
 
