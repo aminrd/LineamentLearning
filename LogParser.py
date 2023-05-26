@@ -6,8 +6,8 @@ model_australia = {}
 model_quest = {}
 model_mixed = {}
 
-
 models = [model_australia, model_quest, model_mixed]
+
 for m in models:
     m['Quest'] = {}
     m['Australia'] = {}
@@ -19,9 +19,6 @@ for m in models:
         m[mp]['Test_n'] = []
         m[mp]['All_p'] = []
         m[mp]['All_n'] = []
-
-
-
 
 
 with open("log.txt", "r") as f:
