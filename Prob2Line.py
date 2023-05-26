@@ -17,7 +17,6 @@ from Utility import *
 import numpy.matlib
 
 
-
 METHOD_OPTIONS = ['Linear', 'Curve', 'BestCurve']
 METHOD = METHOD_OPTIONS[2]
 DEGREELIST = [1,3]
@@ -148,7 +147,6 @@ class prob2map:
             return np.sqrt(D)
 
 
-
     def sortClustesrsByDistance(self, cmap, cbase):
         clist = np.unique(cmap)[1:]
         d = np.zeros_like(clist)
@@ -158,8 +156,6 @@ class prob2map:
 
         args = np.argsort(d)
         return clist[args]
-
-
 
 
     def getClusterLinearError(self, cmap, c):
@@ -188,7 +184,6 @@ class prob2map:
         return self.convertCluster2BestCurve(centroid, ind, degree, getError=True)
 
 
-
     def convertCluster2Curve(self, center, cluster, degree=3, getError=False):
         # Cluster : 2xN array [[x1,x2,...],[y1,y2,...]]
         # Center  : [X0,Y0]
@@ -214,6 +209,7 @@ class prob2map:
             yset = model.predict(X1)
 
             return [ xset + center[0], yset + center[1] ]
+
 
     def convertCluster2BestCurve(self, center, cluster, degree=None, getError=False):
         # Cluster : 2xN array [[x1,x2,...],[y1,y2,...]]
@@ -254,7 +250,6 @@ class prob2map:
             yset = model.predict(X1)
 
             return [ xset + center[0], yset + center[1] ]
-
 
 
     def convertCluster2Line(self, center, cluster, getError=False):
@@ -321,15 +316,11 @@ class prob2map:
         Best_Desc = "No Merge!"
 
 
-
-
         for i in range(crange):
             cprim = cnearby[i+1]
 
             if cprim <= 0:
                 continue
-
-
 
             # Computing Error for other cluster
             if METHOD.__eq__("Linear"):
@@ -339,11 +330,7 @@ class prob2map:
             else:
                 E2 = self.getClusterCurveError(cmap, cprim, degree=DEGREE)
 
-
-
             cmerge = self.mergeClusters(cmap, cbase, cprim)
-
-
 
             # Computing Error if merge these two clusters
             if METHOD.__eq__("Linear"):
@@ -352,8 +339,6 @@ class prob2map:
                 Emerge = self.getClusterBestCurveError(cmerge, np.min([cprim, cbase]), degree=DEGREELIST)
             else:
                 Emerge = self.getClusterCurveError(cmerge, np.min([cprim, cbase]), degree=DEGREE)
-
-
 
 
             if Emerge < EMIN and E1+E2 >= Emerge * threshold:
@@ -365,7 +350,6 @@ class prob2map:
                     Best_Desc = "--- Merged {} and {}".format(cbase, cprim)
 
 
-
         if DEBUG_MODE:
             print(Best_Desc)
             print("--- Total number of clusters = {}".format(len(np.unique(BestMerge))))
@@ -373,14 +357,9 @@ class prob2map:
         return BestMerge
 
 
-
-
-
-
     def makeConversion(self, cutoff = 0.3, eps = 0.3):
         cmap = self.getClusters(cutoff, eps)
         return self.convertClustersToLines(cmap)
-
 
 
     def convertClustersToLines(self, cmap):
@@ -442,9 +421,6 @@ class prob2map:
             curves += [C]
 
         return curves
-
-
-
 
 
     def drawLines(self, pachsize = 17, cutoff = 0.3, mincut = 0.2):
