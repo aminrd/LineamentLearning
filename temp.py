@@ -7,22 +7,10 @@ __copyright__ = "Copyright 2018, Amin Aghaee"
 #p2l = prob2map(pmap)
 #p2l.runMethod(coeff=0.66, eps = 3, iteration=350)
 
-
-
-
-
-
-
 from DATASET import *
 import scipy.io as sio
+
 # --------------------------------------
-
-
-
-
-
-
-
 testList = ['Australia_strip.mat', 'QUEST_strip.mat']
 for T in testList:
     ds_fname = DSDIR + T
@@ -68,7 +56,6 @@ for T in testList:
 
 
     sio.savemat(T[0:5]+'_extreme.mat' , [z,r,o] )
-
 
 
 pmapname = '45_Pmamp_45_Fault_Quest.hdf5_on_QUEST_.npz'
