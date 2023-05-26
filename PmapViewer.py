@@ -97,8 +97,6 @@ class PmapViewer:
 
 
 
-
-
     def load(self, dir = './applet.json'):
 
         with open(dir) as f:
@@ -143,7 +141,6 @@ class PmapViewer:
 
 
 
-
     # --------------------------------------------------------------------------
 
     def getBackground(self, showLines=False, c1 = 1, c2 = 254, layer=-1):
@@ -167,7 +164,6 @@ class PmapViewer:
             #BG[BG > 255] = 255
 
         return np.uint8(BG)
-
 
 
     def getImage(self, showLines = False, angels=False, pct = 0.9, onlyMax = True, threshold = 0.5, cb=1, cl=254, sheet=-1, prob=False):
@@ -215,8 +211,6 @@ class PmapViewer:
 
             im = Image.fromarray(np.uint8(map))
             return im
-
-
 
         else:
 
@@ -266,9 +260,6 @@ class PmapViewer:
                 else:
                     tmp = drawLinesSlope(BG, IDX, MaxSlope, ws=15, FILL=self.FILL)
                     return Image.fromarray(tmp)
-
-
-
 
 
             else:
@@ -333,7 +324,6 @@ class PmapViewer:
                         BG = drawLinesSlope(BG, IDX, slope_m, ws=15, prelative=True, parray=ang_predictions[:,r], FILL=self.FILL)
 
                     return Image.fromarray(BG)
-
 
 
     def plotEvaluation(self):
@@ -424,27 +414,19 @@ class PmapViewer:
 
         im.save('./Temp.png')
 
-
     def updateImage(self, im):
         im2 = im.resize((self.width2, self.height2))
         photo = ImageTk.PhotoImage(im2)
         self.panel.configure(image = photo)
         self.panel.image = photo
 
-
-
     def openImage(self):
         im = self.requestImage()
         im.save('./Temp.png')
         im.show()
 
-
-
-
     def close_window(self):
         self.master.destroy()
-
-
 
     def showclusters(self):
         p2l = prob2map(self.matrix)
@@ -459,7 +441,6 @@ class PmapViewer:
         im.save('./Temp.png')
 
         return im
-
 
 
     def convert2lines(self):
@@ -484,17 +465,9 @@ class PmapViewer:
         return im
 
 
-
-
-
-
-
     def run(self):
 
         self.master.title("Probability Map Viewer")
-
-
-
         # FAULT EXISTENSE:
         # Scale bar to set threshold
         mainframe = tk.Frame(self.master)
@@ -516,20 +489,15 @@ class PmapViewer:
         frame5 = tk.Frame(mainframe)
         frame5.pack(side = tk.RIGHT)
 
-
-
         checkFrame = tk.Frame(self.master)
         checkFrame.pack()
 
         buttonFrame = tk.Frame(self.master)
         buttonFrame.pack()
 
-
-
         # ========================================= #
         # ===============   FRAME 1  ============== #
         # ========================================= #
-
         self.th = tk.Scale(frame1, from_=1, to=100, orient=tk.HORIZONTAL, label='Labeling threshold', length=200)
         self.th.set( 50 )
         self.th.pack()
@@ -538,13 +506,9 @@ class PmapViewer:
         self.pcth.set( 1 )
         self.pcth.pack()
 
-
-
         # ========================================= #
         # ===============   FRAME 2  ============== #
         # ========================================= #
-
-
         self.bgcol = tk.Scale(frame2, from_=0, to=254, orient=tk.HORIZONTAL, length=100)
         self.bgcol.set(0)
         self.bgcol.pack()
@@ -558,13 +522,9 @@ class PmapViewer:
         pnl_bar = tk.Label(frame2, image=img_bar)
         pnl_bar.pack()
 
-
-
         # ========================================= #
         # ===============   FRAME 3  ============== #
         # ========================================= #
-
-
         tbg = tk.Text(frame3, height=2, width=15)
         tbg.pack()
         tbg.insert(tk.END, "Background's colour")
@@ -573,18 +533,12 @@ class PmapViewer:
         tl.pack()
         tl.insert(tk.END, "Line's colour")
 
-
-
-
         # ========================================= #
         # ===============   FRAME 4  ============== #
         # ========================================= #
-
-
         tpc = tk.Text(frame4, height=2, width=30)
         tpc.pack()
         tpc.insert(tk.END, "Prediction colour:")
-
 
         self.pcol = tk.Listbox(frame4, height=6)
         self.pcol.insert(1, 'red')
@@ -602,18 +556,12 @@ class PmapViewer:
         self.pcol.itemconfig(4, {'bg': 'white'})
         self.pcol.itemconfig(5, {'bg': 'black', 'fg':'white'})
 
-
-
-
         # ========================================= #
         # ===============   FRAME 5  ============== #
         # ========================================= #
-
-
         tls = tk.Text(frame5, height=2, width=30)
         tls.pack()
         tls.insert(tk.END, "Underlying map/sheet:")
-
 
         self.lselect = tk.Listbox(frame5, height=5)
         self.lselect.insert(1, 'Empty')
@@ -627,29 +575,20 @@ class PmapViewer:
         self.lselect.insert(9, 'RTP_RI_HGM')
         self.lselect.pack(side=tk.RIGHT)
 
-
-
-
         # ========================================= #
         # ============== CHECK FRAME ============== #
         # ========================================= #
-
-
         self.CheckVar1 = tk.IntVar()
         check = tk.Checkbutton(checkFrame , text="Show interpreted lines", variable = self.CheckVar1)
         check.pack(side=tk.LEFT)
-
 
         self.CheckVarMode = tk.IntVar()
         showMax = tk.Checkbutton(checkFrame, text="Maximum/Mode?", variable = self.CheckVarMode)
         showMax.pack(side=tk.RIGHT)
 
-
-
         self.CheckVarpmap = tk.IntVar()
         angTik = tk.Checkbutton(checkFrame, text="Show prob map?", variable = self.CheckVarpmap)
         angTik.pack(side=tk.LEFT)
-
 
         # ========================================= #
         # ============== BUTTON FRAME ============= #
@@ -663,19 +602,14 @@ class PmapViewer:
         tk.Button(buttonFrame, text='Convert to Lines', command=self.convert2lines, bg="yellow", bd=4, fg="yellow").pack(
             side=tk.RIGHT)
 
-
-
         # ========================================= #
         # ============== IMAGE FRAME ============== #
         # ========================================= #
-
-
         im = Image.fromarray(self.bg)
         im = im.resize((self.width2, self.height2))
         img = ImageTk.PhotoImage(im)
         self.panel = tk.Label(self.master, image=img)
         self.panel.pack()
-
 
         self.RUN = True
         self.master.mainloop()
