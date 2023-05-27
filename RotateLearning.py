@@ -22,7 +22,7 @@ from Logger import *
 
 def GET_PARSER():
     parser = argparse.ArgumentParser()
-    parser.add_argument('work', default='teset-choosy')
+    parser.add_argument('work', default='test-choosy')
     parser.add_argument('-W', '--WSIZE', type=int, default=45)
     parser.add_argument('-it', '--iterations', type=int, default=ITERATIONS)
     parser.add_argument('-prefix', '--prepprefix', default='ANG_')
