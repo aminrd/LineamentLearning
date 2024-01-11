@@ -7,11 +7,9 @@ from PIL import Image, ImageDraw
 from globalVariables import *
 
 
-
 def slideBar(pct = 10.0, totalLength = 30):
     [p1,p2] = [(pct*totalLength)//100 , ((100-pct)*totalLength)//100]
     return '{'+ '='*int(p1) +'#'+ '-'*int(p2) +'}'
-
 
 
 def myNormalizer(matrix):
@@ -42,7 +40,6 @@ def myNormalizer(matrix):
         matrix[idxMax] = 100.0
 
     return matrix
-
 
 
 def rotateWithMap(mat, rmap, map_type = 'r2m', dim = 1):
@@ -109,7 +106,6 @@ def rotateWithMap(mat, rmap, map_type = 'r2m', dim = 1):
     return newMat
 
 
-
 def showMatrix(matrix , dim = 3, fname = FG+'DEFAULT.png', show = True):
     a = np.array(matrix)
 
@@ -144,7 +140,6 @@ def markPredictions(matrix, pmap, WIDTH = 3 , FILL = 128, fname = FG+'Default.pn
 
     im.save(fname)
     return im
-
 
 
 def drawLines(matrix, idx , Y, WIDTH = 3 , FILL = 128, ws = 50, fname = FG+'lines.png', threshold = 0.51):
@@ -281,9 +276,6 @@ def drawCurves(bg, curves, fname=FG+'curves.png', _width=5):
     return im
 
 
-
-
-
 def colour2vec(colour = 'red'):
     if colour.__eq__('red'):
         return np.array([1,0,0])
@@ -299,7 +291,6 @@ def colour2vec(colour = 'red'):
         return np.array([0, 0, 1])
     else:
         return np.array([0, 0, 0])
-
 
 
 def getRandomColour(channel=3, tint = 'default'):
@@ -324,7 +315,6 @@ def getRandomColour(channel=3, tint = 'default'):
 
     else:
         return np.random.choice(range(10, 255), channel)
-
 
 
 def circular_mask(width = 5 , R = None):

@@ -13,8 +13,6 @@ dir2 = './Results/TrainOnRandomSeleciton_W45_fault_QUEST/Pmap_exist_quest.npz'
 dir3 = './Results/TrainOnRandomSelection_w45_fault/Pmap_exist_quest.npz'
 dir4 = './Results/TrainOnRandomSelection_w45_fault/PMAP_exist.npz'
 
-
-
 dir5 = './Results/NewTrainingRandom_strip_mixed/Pmamp_Fault_Australia.hdf5Australia_strip.mat.npz'
 dir6 = './Results/NewTrainingRandom_strip_mixed/Pmamp_Fault_Australia.hdf5QUEST_strip.mat.npz'
 dir7 = './Results/NewTrainingRandom_strip_mixed/Pmamp_Fault_Mixed.hdf5Australia_strip.mat.npz'
@@ -22,9 +20,7 @@ dir8 = './Results/NewTrainingRandom_strip_mixed/Pmamp_Fault_Mixed.hdf5QUEST_stri
 dir9 = './Results/NewTrainingRandom_strip_mixed/Pmamp_Fault_Quest.hdf5Australia_strip.mat.npz'
 dir10 = './Results/NewTrainingRandom_strip_mixed/Pmamp_Fault_Quest.hdf5QUEST_strip.mat.npz'
 
-
 dir11 = './Results/First3Layers/Pmamp_Fault_Australia.hdf5Australia_strip.mat.npz'
-
 
 
 jdir = './applet.json'
@@ -32,6 +28,3 @@ jdir = './applet.json'
 p = PmapViewer(dir=jdir)
 p.run()
 
-
-
-#TODO: Prepare a demo video on training phase

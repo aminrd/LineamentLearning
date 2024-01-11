@@ -20,10 +20,9 @@ from Logger import *
 # --------------------------------------
 
 
-
 def GET_PARSER():
     parser = argparse.ArgumentParser()
-    parser.add_argument('work', default='teset-choosy')
+    parser.add_argument('work', default='test-choosy')
     parser.add_argument('-W', '--WSIZE', type=int, default=45)
     parser.add_argument('-it', '--iterations', type=int, default=ITERATIONS)
     parser.add_argument('-prefix', '--prepprefix', default='ANG_')
@@ -49,13 +48,8 @@ if __name__== "__main__":
     parser = GET_PARSER()
     args = parser.parse_args()
     work = args.work
+
     #SET_DEFAULT_ARGUMENTS(args)
-
-
-
-
-
-
     # ------------------ Training model only on faulty areas ------------------------------------------------------------
     if work.__eq__("train-choosy"):
 
@@ -97,26 +91,12 @@ if __name__== "__main__":
 
                 model.train(X, Y, epochs=1)
 
-
-
-
-
-
-
-
-
-
     # ------------------ Testing model only on faulty areas ------------------------------------------------------------
     elif work.__eq__("test-choosy"):
-
-
-
         #testList = list(range(36))     # See Results on all different rotations
         testList = list([23])           # See Results only on main file (because 36 = 360 degrees rotation = main file)
 
         step = np.pi / NUMBER_OF_DEGREE_MODELS
-
-
 
         for i in testList:
 
@@ -168,16 +148,6 @@ if __name__== "__main__":
             tmp = drawLinesSlope(empty, IDX, MaxSlope, ws=6, fname=FG + 'Predictions_Overlay_{}.png'.format(i + 1))
 
 
-
-
-
-
-
-
-
-
-
-
     # ------------------ Train Fault detection method on all area, Not break mask, instead Bootstrapping on all input images -----------------------------
     elif work.__eq__("train-fault-all"):
 
@@ -218,15 +188,6 @@ if __name__== "__main__":
                     Y = np.concatenate((Y, Yb), axis=0)
 
                 model.train(X,Y,epochs=1)
-
-
-
-
-
-
-
-
-
 
 
     # ------------------ Test Fault detection method on all area, break mask -----------------------------
@@ -282,17 +243,6 @@ if __name__== "__main__":
             mergeAll = mergeAll / len(windowList)
             showMatrix(mergeAll, dim=3, fname=FG + 'MergeAll_{}.png'.format(i+1), show=False)
             #showMatrix(mergeAll, dim=3, fname=FG + 'MergeAll_QUEST_{}.png'.format(i + 1), show=False)
-
-
-
-
-
-
-
-
-
-
-
 
     # ------------------ Test Fault detection method on all area, break mask -----------------------------
     elif work.__eq__("test-fault-all-derotate"):
@@ -353,18 +303,6 @@ if __name__== "__main__":
         im.save(FG+'mergeTest.png')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     elif work.__eq__("prepare-datasets-ang"):
 
         ds = DATASET(DSDIR + 'Australia_360.mat')
@@ -389,20 +327,9 @@ if __name__== "__main__":
             np.savez(FNAME+'{}'.format(t1), X=X, Y=Y)
 
 
-
-
-
-
-
-
-
-
-
-
     elif work.__eq__("prepare-datasets-flt"):
 
         W = args.WSIZE
-
 
         ds1 = DATASET(DSDIR + 'Australia_strip.mat')
         ds2 = DATASET(DSDIR + 'QUEST_strip.mat')
@@ -410,13 +337,10 @@ if __name__== "__main__":
         RATIO = [0.04, 0.005]
         oname = ['A_','Q_']
 
-
         ds1.expandBy(width=W, epsilon=0.9)
         ds2.expandBy(width=W, epsilon=0.9)
 
         ds = [ds1, ds2]
-
-
 
         NFILE = [100,100]
 
@@ -428,17 +352,6 @@ if __name__== "__main__":
 
                 FNAME = DSREADY + oname[t2] + '{}'.format(t1)
                 np.savez(FNAME, X=X, Y=Y)
-
-
-
-
-
-
-
-
-
-
-
 
 
     elif work == "train-prepared":
@@ -482,15 +395,6 @@ if __name__== "__main__":
                 model.train(X, Y, epochs=1)
 
 
-
-
-
-
-
-
-
-
-
     elif work.__eq__("test-fault-all-prep"):
 
         testList = ['Australia_strip.mat', 'QUEST_strip.mat']
@@ -511,7 +415,6 @@ if __name__== "__main__":
             O[:, :, 1] = ds.OUTPUT * 255
             O[:, :, 2] = ds.OUTPUT * 255
             O = np.uint8(O)
-
 
             if DEBUG_MODE:
                 print("-"*30)
@@ -534,16 +437,6 @@ if __name__== "__main__":
             P.save(dir = FG + 'Probmap_{}.npz'.format(idx))
 
 
-
-
-
-
-
-
-
-
-
-
     elif work.__eq__("test-choosy-prepared"):
 
         #testList = list(range(36))     # See Results on all different rotations
@@ -554,7 +447,6 @@ if __name__== "__main__":
         FLT = FILTER(flt_name)
 
         model = MODEL(w=W, param_dir=CB + 'Rotate_choosy.hdf5')
-
 
         for i in testList:
 
@@ -588,14 +480,8 @@ if __name__== "__main__":
             P.save(dir=FG + 'Probmap_choosy_{}.npz'.format(idx))
 
 
-
-
-
-
-
-
     elif work.__eq__("apply-on-prediction"):
-        Wf = 45 # Fault deteciton window size
+        Wf = 45 # Fault detection window size
         Wa = 45 # Angel detection window size
         threshold = 0.4
 
@@ -654,23 +540,17 @@ if __name__== "__main__":
         tmp = drawLinesSlope(empty, IDX, MaxSlope, ws=15, fname=FG + 'Combined_Ovelay.png')
 
 
-
-
-
-
     elif work.__eq__("prepare-pmap"):
         Wf = args.WSIZE
         ratio = 0.999
 
         testList = ['Australia_strip.mat', 'QUEST_strip.mat']
 
-
         for T in testList:
             ds_fname = DSDIR + T
             ds = DATASET(ds_fname)
 
             model_flt = MODEL(w=Wf, param_dir=CB + args.callback)
-
 
             masknumber = 80
             masks = ds.shrinkMask(maskName="all", number=masknumber)
@@ -681,7 +561,6 @@ if __name__== "__main__":
                 Yh1 = model_flt.predict(X)
                 pmap_tmp = probMap(ds.OUTPUT.shape, IDX, Yh1)
                 pmap = np.maximum(pmap, pmap_tmp)
-
 
             # Logging activity:
             L = Logger()
@@ -697,7 +576,6 @@ if __name__== "__main__":
             L.addlog(" Train Error = {} , {}".format(ev_train[0], ev_train[1]))
             L.addlog(" Test Error = {} , {}".format(ev_test[0], ev_test[1]))
             L.addlog(" All Error = {} , {}".format(ev_all[0], ev_all[1]))
-
 
             pmapname = PMAP_DIR + '{}_Pmamp_'.format(Wf)+ args.callback + '_on_{}_'.format(T[:5]) + '.npz'
             np.savez(pmapname, matrix=pmap)
@@ -745,8 +623,6 @@ if __name__== "__main__":
 
         errors = {'TrainE':Train_E , 'TestE':Test_E, 'AllE':All_E}
         sio.savemat('loss_'+ args.callback + "_" + T + "_eval.mat", errors)
-
-
 
 
     else:

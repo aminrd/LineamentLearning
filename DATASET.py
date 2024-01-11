@@ -154,7 +154,6 @@ class DATASET:
         return [X,Y, IDX]
 
 
-
     def generateDSwithFilter(self, dstype, output, mask, w = WindowSize, choosy = False, ratio = 1.0):
         # When choosy = TRUE : it only picks the fault locations and labels are based on fault angels
         # ratio coresponds to randomly selecting all possible locations
@@ -208,8 +207,6 @@ class DATASET:
         return [X,Y, IDX]
 
 
-
-
     def shrinkMask(self, maskName = 'train', number = 9):
         # Shrink mask into 1/9 and return 9 masks:
 
@@ -243,8 +240,6 @@ class DATASET:
         return m
 
 
-
-
     def evaluate(self, _pmap, expand=0, mask = 'all', etype = 'our'):
         pmap = np.array(_pmap)
         labels = self.expandBy(width=expand, epsilon=0.9 ,type='normal', set=False)
@@ -264,14 +259,11 @@ class DATASET:
             pmap[np.where(self.MASK == 0)] = 0
 
 
-
         if etype == 'our':
             IDX_pos = labels > 0
             differror = np.square(labels - pmap)
             differror[~IDX_pos] = 0
             pos_score = differror.sum() / IDX_pos.sum()
-
-
 
             IDX_neg = labels <= 0
             differror = np.square(labels - pmap)
@@ -280,10 +272,8 @@ class DATASET:
 
             IDXa = np.where(pmap > 0)
 
-
             return [pos_score, neg_score]
-
-
+            
         else:
             EPS = np.finfo(float).eps
 

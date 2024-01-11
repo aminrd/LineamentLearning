@@ -66,7 +66,6 @@ class PmapViewer:
             self.load(dir)
 
 
-
         if not bg is None:
             if len(bg.shape) >= 3:
                 self.bg = bg
@@ -96,16 +95,12 @@ class PmapViewer:
         self.master = tk.Tk()
 
 
-
-
-
     def load(self, dir = './applet.json'):
 
         with open(dir) as f:
             self.jfile = json.load(f)
 
         self.ds = DATASET(self.jfile["dataset"]["link"])
-
 
         if LOAD_MODELS:
             self.wf = int(self.jfile["model1"]["w"])
@@ -126,10 +121,8 @@ class PmapViewer:
             #self.angels = h['matrix']
             self.angels = np.zeros((self.width, self.height, 36))
 
-
-
-
         sz = MAX_WINDOW_SIZE
+        
         if self.width > sz or self.height > sz:
             if self.width > sz:
                 self.height2 = (sz * self.height) // self.width
@@ -142,10 +135,7 @@ class PmapViewer:
             self.width2 = self.width
 
 
-
-
     # --------------------------------------------------------------------------
-
     def getBackground(self, showLines=False, c1 = 1, c2 = 254, layer=-1):
 
         BG = np.ones((self.width, self.height, 3))
@@ -167,7 +157,6 @@ class PmapViewer:
             #BG[BG > 255] = 255
 
         return np.uint8(BG)
-
 
 
     def getImage(self, showLines = False, angels=False, pct = 0.9, onlyMax = True, threshold = 0.5, cb=1, cl=254, sheet=-1, prob=False):
@@ -215,8 +204,6 @@ class PmapViewer:
 
             im = Image.fromarray(np.uint8(map))
             return im
-
-
 
         else:
 
@@ -268,18 +255,13 @@ class PmapViewer:
                     return Image.fromarray(tmp)
 
 
-
-
-
             else:
 
                 flt_name = self.jfile["filter"]["link"]
                 FLT = FILTER(flt_name)
 
 
-                [X, Y, IDX] = self.ds.generateDSwithFilter(FILTERDIR + 'Filters_0_w45.mat', self.ds.DEGREES, p, ratio=pct,
-                                                      w=self.wa,
-                                                      choosy=True)
+                [X, Y, IDX] = self.ds.generateDSwithFilter(FILTERDIR + 'Filters_0_w45.mat', self.ds.DEGREES, p, ratio=pct,  w=self.wa,  choosy=True)
 
                 ang_predictions = np.zeros((len(Y), FLT.N))
 
@@ -335,7 +317,6 @@ class PmapViewer:
                     return Image.fromarray(BG)
 
 
-
     def plotEvaluation(self):
 
         fname = './applet_images/plot.png'
@@ -362,14 +343,12 @@ class PmapViewer:
             all_err[i] = self.ds.evaluate(self.matrix, xaxis[i], 'all')
 
 
-
         f, axarr = plt.subplots(3, sharey=True)
 
         axarr[0].plot(xaxis, train_err[:,0], '+', xaxis, train_err[:,1], 'r--')
         axarr[0].set_title('Training errors')
         str = 'pos: {:10.3f}\n neg:{:10.3f}'.format(np.mean(train_err[:,0]), np.mean(train_err[:,1]))
         axarr[0].text(4, 0.5,str, horizontalalignment='right', verticalalignment='center')
-
 
 
         axarr[1].plot(xaxis, test_err[:, 0], '+', xaxis, test_err[:, 1], 'r--')
@@ -424,27 +403,19 @@ class PmapViewer:
 
         im.save('./Temp.png')
 
-
     def updateImage(self, im):
         im2 = im.resize((self.width2, self.height2))
         photo = ImageTk.PhotoImage(im2)
         self.panel.configure(image = photo)
         self.panel.image = photo
 
-
-
     def openImage(self):
         im = self.requestImage()
         im.save('./Temp.png')
         im.show()
 
-
-
-
     def close_window(self):
         self.master.destroy()
-
-
 
     def showclusters(self):
         p2l = prob2map(self.matrix)
@@ -459,7 +430,6 @@ class PmapViewer:
         im.save('./Temp.png')
 
         return im
-
 
 
     def convert2lines(self):
@@ -484,17 +454,9 @@ class PmapViewer:
         return im
 
 
-
-
-
-
-
     def run(self):
 
         self.master.title("Probability Map Viewer")
-
-
-
         # FAULT EXISTENSE:
         # Scale bar to set threshold
         mainframe = tk.Frame(self.master)
@@ -516,20 +478,15 @@ class PmapViewer:
         frame5 = tk.Frame(mainframe)
         frame5.pack(side = tk.RIGHT)
 
-
-
         checkFrame = tk.Frame(self.master)
         checkFrame.pack()
 
         buttonFrame = tk.Frame(self.master)
         buttonFrame.pack()
 
-
-
         # ========================================= #
         # ===============   FRAME 1  ============== #
         # ========================================= #
-
         self.th = tk.Scale(frame1, from_=1, to=100, orient=tk.HORIZONTAL, label='Labeling threshold', length=200)
         self.th.set( 50 )
         self.th.pack()
@@ -538,13 +495,9 @@ class PmapViewer:
         self.pcth.set( 1 )
         self.pcth.pack()
 
-
-
         # ========================================= #
         # ===============   FRAME 2  ============== #
         # ========================================= #
-
-
         self.bgcol = tk.Scale(frame2, from_=0, to=254, orient=tk.HORIZONTAL, length=100)
         self.bgcol.set(0)
         self.bgcol.pack()
@@ -558,13 +511,9 @@ class PmapViewer:
         pnl_bar = tk.Label(frame2, image=img_bar)
         pnl_bar.pack()
 
-
-
         # ========================================= #
         # ===============   FRAME 3  ============== #
         # ========================================= #
-
-
         tbg = tk.Text(frame3, height=2, width=15)
         tbg.pack()
         tbg.insert(tk.END, "Background's colour")
@@ -573,18 +522,12 @@ class PmapViewer:
         tl.pack()
         tl.insert(tk.END, "Line's colour")
 
-
-
-
         # ========================================= #
         # ===============   FRAME 4  ============== #
         # ========================================= #
-
-
         tpc = tk.Text(frame4, height=2, width=30)
         tpc.pack()
         tpc.insert(tk.END, "Prediction colour:")
-
 
         self.pcol = tk.Listbox(frame4, height=6)
         self.pcol.insert(1, 'red')
@@ -602,18 +545,12 @@ class PmapViewer:
         self.pcol.itemconfig(4, {'bg': 'white'})
         self.pcol.itemconfig(5, {'bg': 'black', 'fg':'white'})
 
-
-
-
         # ========================================= #
         # ===============   FRAME 5  ============== #
         # ========================================= #
-
-
         tls = tk.Text(frame5, height=2, width=30)
         tls.pack()
         tls.insert(tk.END, "Underlying map/sheet:")
-
 
         self.lselect = tk.Listbox(frame5, height=5)
         self.lselect.insert(1, 'Empty')
@@ -627,29 +564,20 @@ class PmapViewer:
         self.lselect.insert(9, 'RTP_RI_HGM')
         self.lselect.pack(side=tk.RIGHT)
 
-
-
-
         # ========================================= #
         # ============== CHECK FRAME ============== #
         # ========================================= #
-
-
         self.CheckVar1 = tk.IntVar()
         check = tk.Checkbutton(checkFrame , text="Show interpreted lines", variable = self.CheckVar1)
         check.pack(side=tk.LEFT)
-
 
         self.CheckVarMode = tk.IntVar()
         showMax = tk.Checkbutton(checkFrame, text="Maximum/Mode?", variable = self.CheckVarMode)
         showMax.pack(side=tk.RIGHT)
 
-
-
         self.CheckVarpmap = tk.IntVar()
         angTik = tk.Checkbutton(checkFrame, text="Show prob map?", variable = self.CheckVarpmap)
         angTik.pack(side=tk.LEFT)
-
 
         # ========================================= #
         # ============== BUTTON FRAME ============= #
@@ -663,19 +591,14 @@ class PmapViewer:
         tk.Button(buttonFrame, text='Convert to Lines', command=self.convert2lines, bg="yellow", bd=4, fg="yellow").pack(
             side=tk.RIGHT)
 
-
-
         # ========================================= #
         # ============== IMAGE FRAME ============== #
         # ========================================= #
-
-
         im = Image.fromarray(self.bg)
         im = im.resize((self.width2, self.height2))
         img = ImageTk.PhotoImage(im)
         self.panel = tk.Label(self.master, image=img)
         self.panel.pack()
-
 
         self.RUN = True
         self.master.mainloop()

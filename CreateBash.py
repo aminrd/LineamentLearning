@@ -2,9 +2,6 @@ output_name = 'Work.sh'
 work_list = list(range(9,57,4))
 
 
-
-
-
 with open(output_name, "w") as f:
     for w in work_list:
         #f.write('python RotateLearning.py prepare-datasets-flt -W {}\n'.format(w))
